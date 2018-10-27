@@ -1,0 +1,7 @@
+.progress{
+    height: 25px;
+}
+
+.main{
+    background: linear-gradient(110deg, rgb(25, 0, 255) 33%, rgba(25, 0, 247, 0) 33%), linear-gradient(110deg, #dd0000 66%, #ffc608 66%);
+}
