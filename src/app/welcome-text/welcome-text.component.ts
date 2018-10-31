@@ -15,7 +15,8 @@ export class WelcomeTextComponent implements OnInit {
   [
     '../assets/img/1.jpg',
     '../assets/img/2.jpg',
-    '../assets/img/3.jpg'
+    '../assets/img/3.jpg',
+    '../assets/img/4.jpg'
   ];
   
   ngOnInit() {

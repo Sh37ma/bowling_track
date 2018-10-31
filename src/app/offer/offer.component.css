@@ -1,0 +1,27 @@
+.main{
+    background: linear-gradient(110deg, rgb(22, 20, 20) 33%, rgba(25, 0, 247, 0) 33%), linear-gradient(110deg, #1d0e31 66%, #887b51 66%);
+}
+
+.progress{
+    height: 25px;
+}
+
+h1, h2{
+    color:azure;
+    font-weight: bold;
+}
+
+.left{
+    text-align: left;
+    /* display: inline-block; */
+}
+
+.center{
+    text-align: center;
+    /* display: inline-block; */
+}
+
+.right{
+    text-align: right;
+    /* display: inline-block; */
+}
