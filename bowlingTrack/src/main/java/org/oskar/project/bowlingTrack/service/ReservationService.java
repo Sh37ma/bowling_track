@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.oskar.project.bowlingTrack.database.MongoDBClass;
 import org.oskar.project.bowlingTrack.model.Message;
 import org.oskar.project.bowlingTrack.model.Reservation;
@@ -12,8 +13,7 @@ import org.oskar.project.bowlingTrack.model.Reservation;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.Block;
-import static com.mongodb.client.model.Projections.excludeId;
+
 import static com.mongodb.client.model.Filters.eq;
 
 public class ReservationService {
@@ -36,7 +36,7 @@ public class ReservationService {
 		List<Document> list = new ArrayList<Document>();
 		MongoCollection<Document> col = database.getCollection(collectionName);
 
-		 FindIterable<Document> it = col.find().projection(excludeId());
+		 FindIterable<Document> it = col.find();
 	        
 	        ArrayList<Document> docs = new ArrayList<>();
 	        
@@ -66,23 +66,30 @@ public class ReservationService {
 		mongoDBClass.openConnection();
 		MongoDatabase database = mongoDBClass.getDatabase();
 		
-		MongoCollection<Document> col = database.getCollection(collectionName);
 		
-		
-		FindIterable<Document> it = col.find(eq("number", number)).projection(excludeId());
 		ArrayList<Document> docs = new ArrayList<>();
-        
-        it.into(docs);
 		
-		mongoDBClass.closeConnection();
+		try {
+			MongoCollection<Document> col = database.getCollection(collectionName);
+			FindIterable<Document> it = col.find(eq("number", number));
+			
+	        it.into(docs);
+		
+		}
+		finally{
+			
+			mongoDBClass.closeConnection();
+			
+		}
 		return docs.get(0);
 	}
 	
-	public Reservation addReservation() {
+	public Reservation addReservation(Reservation reservation) {
 		
 		
 		mongoDBClass.openConnection();
 		MongoDatabase database = mongoDBClass.getDatabase();
+		
 		
 		MongoCollection<Document> col = database.getCollection(collectionName);
 		
@@ -93,22 +100,39 @@ public class ReservationService {
 		
         ArrayList<Object> list = new ArrayList<>(docs.get(0).values());
 		
-		//reservation.setNumber((long) list.get(1));
-		System.out.print(list.get(1));
 		
-		//messages.put(message.getId(), message);
+		try {	    
+			
+			//get highest number of reservation in DB
+			
+	        String newId =  list.get(1).toString();
+	        double x = Double.parseDouble(newId.trim());
+			reservation.setNumber((int)x + 1);
+			
+			//Creating new Document from input
+			 Document d = new Document("_id", new ObjectId());
+		        d.append("number"    , reservation.getNumber());
+		        d.append("first_name", reservation.getFirstName());
+		        d.append("last_name" , reservation.getLastName());
+		        d.append("date"		 , reservation.getDate());
+		        d.append("telephone" , reservation.getTelephone());
+
+		        col.insertOne(d);
+			
+		} 
+		finally{
+			
+			mongoDBClass.closeConnection();
+		}
+		 
 		
-		
-		
-		
-		mongoDBClass.closeConnection();
-		return null;
+		return reservation;
 	}
 	
 	public Document updateMessage(Message message) {
 		//if(message.getId() <= 0) {
 		//	return null;
-		//}
+		//} 
 		return null;
 	}
 	

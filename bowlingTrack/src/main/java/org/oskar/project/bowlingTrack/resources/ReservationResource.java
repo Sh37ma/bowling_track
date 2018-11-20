@@ -39,8 +39,12 @@ public class ReservationResource {
 	}
 	
 	@POST
-	public Reservation addReservation() {
+	public Reservation addReservation(Reservation reservation) {
 		
-		return reservationService.addReservation();
+		Reservation newReservation = reservationService.addReservation(reservation);
+		
+		return newReservation;
+		
+		
 	}
 }

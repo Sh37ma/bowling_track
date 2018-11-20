@@ -3,38 +3,36 @@ package org.oskar.project.bowlingTrack.model;
 
 public class Reservation {
 
-	private String id;
-	private long number;
+	private int number;
 	private String firstName;
-	private String lastNameName;
+	private String lastName;
 	private String date;	
-	private long telephone;
+	private int telephone;
 	
 
+	public Reservation(int number, String firstName, String lastName, String date, int telephone) {
+		
+		this.number = number;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.date = date;
+		this.telephone = telephone;
+		
+	}
+	
 	public Reservation() {
 		
 	}
 
 
-	public long getNumber() {
+	public int getNumber() {
 		return number;
 	}
 
 
-	public void setNumber(long number) {
+	public void setNumber(int number) {
 		this.number = number;
 	}
-
-
-	public String getId() {
-		return id;
-	}
-
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
 
 
 	public String getDate() {
@@ -47,12 +45,12 @@ public class Reservation {
 	}
 
 
-	public long getTelephone() {
+	public int getTelephone() {
 		return telephone;
 	}
 
 
-	public void setTelephone(long telephone) {
+	public void setTelephone(int telephone) {
 		this.telephone = telephone;
 	}
 
@@ -69,14 +67,14 @@ public class Reservation {
 
 
 
-	public String getLastNameName() {
-		return lastNameName;
+	public String getLastName() {
+		return lastName;
 	}
 
 
 
-	public void setLastNameName(String lastNameName) {
-		this.lastNameName = lastNameName;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 	
 	
