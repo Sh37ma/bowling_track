@@ -1,142 +1,173 @@
 package org.oskar.project.bowlingTrack.service;
 
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
-import org.bson.types.ObjectId;
+import org.bson.codecs.configuration.CodecRegistry;
 import org.oskar.project.bowlingTrack.database.MongoDBClass;
-import org.oskar.project.bowlingTrack.model.Message;
+import org.oskar.project.bowlingTrack.exception.DataNotFoundException;
 import org.oskar.project.bowlingTrack.model.Reservation;
 
-import com.mongodb.client.FindIterable;
+import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-
-import static com.mongodb.client.model.Filters.eq;
 
 public class ReservationService {
 	
 	private String collectionName = "reservations";
-	
-	MongoDBClass mongoDBClass = new MongoDBClass();
-	
+	private MongoDBClass mongoDBClass = new MongoDBClass();
+	private CodecRegistry pojoCodecRegistry = mongoDBClass.getPojoCodecRegistry();
 	
 	public ReservationService() {
-		
 	}
 	
 	
-	public List<Document> getAllReservations(){
-		
+	public List<Reservation> getAllReservations(){
+      
 		mongoDBClass.openConnection();
 		MongoDatabase database = mongoDBClass.getDatabase();
-		
-		List<Document> list = new ArrayList<Document>();
-		MongoCollection<Document> col = database.getCollection(collectionName);
-
-		 FindIterable<Document> it = col.find();
-	        
-	        ArrayList<Document> docs = new ArrayList<>();
-	        
-	        it.into(docs);
-	
-	        for (Document doc : docs) {
-	        	list.add(doc);
-	        }  
-		
-				       /*
-				        col.find().forEach(new Block<Document>() {
-				            @Override
-				            public void apply(final Document document) {
-				                list.add(document);
-				            }
-				        });       
-				        
-						*/
-        mongoDBClass.closeConnection();
-		return list;
-	}
-	
-	
-	public Document getReservation(long number) {
-		
-		
-		mongoDBClass.openConnection();
-		MongoDatabase database = mongoDBClass.getDatabase();
-		
-		
-		ArrayList<Document> docs = new ArrayList<>();
+		MongoCollection<Reservation> col = database.getCollection(collectionName, Reservation.class)
+			   									   .withCodecRegistry(pojoCodecRegistry);
+		List<Reservation> list = new ArrayList<Reservation>();
 		
 		try {
-			MongoCollection<Document> col = database.getCollection(collectionName);
-			FindIterable<Document> it = col.find(eq("number", number));
-			
-	        it.into(docs);
+		    Block<Reservation> printBlock = new Block<Reservation>() {
+		    	@Override
+		    	public void apply(final Reservation reservation) {
+		    		list.add(reservation);
+		    	}
+		    };
 		
+		    col.find().forEach(printBlock);
+		        
 		}
 		finally{
 			
 			mongoDBClass.closeConnection();
 			
 		}
-		return docs.get(0);
+		
+		if(list.isEmpty()) {
+			throw new DataNotFoundException("Collection is empty");
+		}
+		
+		return list;		
 	}
 	
-	public Reservation addReservation(Reservation reservation) {
-		
+	
+	public Reservation getReservation(long number) {
 		
 		mongoDBClass.openConnection();
 		MongoDatabase database = mongoDBClass.getDatabase();
+		MongoCollection<Reservation> col = database.getCollection(collectionName, Reservation.class)
+				   .withCodecRegistry(pojoCodecRegistry);
+		Reservation reservation;
 		
+		try {
+			reservation = col.find(eq("number", number)).first();
+			
+		}
+		finally{
+			mongoDBClass.closeConnection();
+			
+		}
 		
-		MongoCollection<Document> col = database.getCollection(collectionName);
+		if(reservation == null) {
+			throw new DataNotFoundException("Reservation with number: " + number + " not found");
+		}
 		
-		FindIterable<Document> it = col.find().sort(new Document("number", -1));
-		ArrayList<Document> docs = new ArrayList<>();
-        
-        it.into(docs);
+		return reservation;
+	}
+	
+	
+	public Reservation addReservation(Reservation newReservation) {
 		
-        ArrayList<Object> list = new ArrayList<>(docs.get(0).values());
-		
-		
+		mongoDBClass.openConnection();
+		MongoDatabase database = mongoDBClass.getDatabase();
+				
+		MongoCollection<Reservation> col = database.getCollection(collectionName, Reservation.class)
+				   .withCodecRegistry(pojoCodecRegistry);
+		//get highest number of reservation in DB
+		Reservation reservation= col.find().sort(new Document("number", -1)).first();		
 		try {	    
+			int newNumber = 0;
 			
-			//get highest number of reservation in DB
+			if(reservation != null){
+				newNumber = reservation.getNumber();
+			}
 			
-	        String newId =  list.get(1).toString();
-	        double x = Double.parseDouble(newId.trim());
-			reservation.setNumber((int)x + 1);
+	        newReservation.setNumber(newNumber + 1);
 			
-			//Creating new Document from input
-			 Document d = new Document("_id", new ObjectId());
-		        d.append("number"    , reservation.getNumber());
-		        d.append("first_name", reservation.getFirstName());
-		        d.append("last_name" , reservation.getLastName());
-		        d.append("date"		 , reservation.getDate());
-		        d.append("telephone" , reservation.getTelephone());
-
-		        col.insertOne(d);
-			
+			//Inserting new Reservation		  
+		    col.insertOne(newReservation);
 		} 
 		finally{
 			
 			mongoDBClass.closeConnection();
 		}
 		 
+		return newReservation;
+	}
+	
+	
+	public Reservation updateReservation(Reservation reservation, int number) {
+
+		mongoDBClass.openConnection();
+		MongoDatabase database = mongoDBClass.getDatabase();
+		Reservation reservationToChange;
+		
+		try {
+			MongoCollection<Reservation> col = database.getCollection(collectionName, Reservation.class)
+					   .withCodecRegistry(pojoCodecRegistry);
+			reservationToChange= col.find(eq("number", number)).first();
+			
+			col.updateOne(eq("number", number),combine
+						   (set("firstName", reservation.getFirstName()), 
+							set("lastName", reservation.getLastName()), 
+							set("date", reservation.getDate()), 
+							set("telephone", reservation.getTelephone())));
+			reservation.setNumber(number);
+		}
+		finally{
+			mongoDBClass.closeConnection();
+			
+		}
+		
+		if(reservationToChange == null) {
+			throw new DataNotFoundException("Reservation with number: " + number + " not found and not updated");
+		}
 		
 		return reservation;
 	}
 	
-	public Document updateMessage(Message message) {
-		//if(message.getId() <= 0) {
-		//	return null;
-		//} 
-		return null;
-	}
-	
-	public Document removeMessage(long id) {
-		return null;
+	public Reservation removeReservation(int number) {
+		
+		mongoDBClass.openConnection();
+		MongoDatabase database = mongoDBClass.getDatabase();
+		Reservation reservationToDelete;
+		
+		try {
+			MongoCollection<Reservation> col = database.getCollection(collectionName, Reservation.class)
+					   .withCodecRegistry(pojoCodecRegistry);
+			reservationToDelete= col.find(eq("number", number)).first();
+			col.deleteOne(eq("number", number));;
+			
+		}
+		finally{
+			mongoDBClass.closeConnection();
+			
+		}
+		
+		if(reservationToDelete == null) {
+			throw new DataNotFoundException("Reservation with number: " + number + " not found and not deleted");
+		}
+		
+		return reservationToDelete;
 	}
 }

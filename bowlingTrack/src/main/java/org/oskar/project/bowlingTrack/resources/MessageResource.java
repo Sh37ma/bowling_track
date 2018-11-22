@@ -1,7 +1,6 @@
  package org.oskar.project.bowlingTrack.resources;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -16,7 +15,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.oskar.project.bowlingTrack.model.Message;

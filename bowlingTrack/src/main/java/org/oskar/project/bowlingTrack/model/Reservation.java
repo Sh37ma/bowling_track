@@ -1,8 +1,10 @@
 package org.oskar.project.bowlingTrack.model;
 
+import org.bson.types.ObjectId;
 
 public class Reservation {
 
+	private ObjectId id;
 	private int number;
 	private String firstName;
 	private String lastName;
@@ -22,6 +24,14 @@ public class Reservation {
 	
 	public Reservation() {
 		
+	}
+	
+	public ObjectId getId() {
+		return id;
+	}
+
+	public void setId(ObjectId id) {
+		this.id = id;
 	}
 
 
