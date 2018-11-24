@@ -37,14 +37,14 @@ public class ReservationService {
 		List<Reservation> list = new ArrayList<Reservation>();
 		
 		try {
-		    Block<Reservation> printBlock = new Block<Reservation>() {
+		    Block<Reservation> addBlock = new Block<Reservation>() {
 		    	@Override
 		    	public void apply(final Reservation reservation) {
 		    		list.add(reservation);
 		    	}
 		    };
 		
-		    col.find().forEach(printBlock);
+		    col.find().forEach(addBlock);
 		        
 		}
 		finally{

@@ -1,4 +1,4 @@
-package org.oskar.project.bowlingTrack.model;
+package Tutorial;
 
 import java.util.Date;
 import java.util.HashMap;

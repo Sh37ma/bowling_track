@@ -26,7 +26,7 @@ public class ReservationResource {
 	ReservationService reservationService = new ReservationService();
 	
 	@GET
-	public List<Reservation> getReservations() {
+	public List<Reservation> getAllReservations() {
 		
 		return reservationService.getAllReservations();
 	}

@@ -1,4 +1,4 @@
- package org.oskar.project.bowlingTrack.resources;
+ package Tutorial;
 
 import java.net.URI;
 import java.util.List;
@@ -16,9 +16,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import org.oskar.project.bowlingTrack.model.Message;
-import org.oskar.project.bowlingTrack.service.MessageService;
 
 @Path("/messages")
 @Consumes(MediaType.APPLICATION_JSON)

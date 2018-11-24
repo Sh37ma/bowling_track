@@ -7,7 +7,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.oskar.project.bowlingTrack.model.ErrorMessage;
 
-@Provider
+//@Provider
 public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
 
 	@Override

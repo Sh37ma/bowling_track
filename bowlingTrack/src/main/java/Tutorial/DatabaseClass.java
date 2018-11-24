@@ -1,10 +1,7 @@
-package org.oskar.project.bowlingTrack.database;
+package Tutorial;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.oskar.project.bowlingTrack.model.Message;
-import org.oskar.project.bowlingTrack.model.Profile;
 
 
 public class DatabaseClass {

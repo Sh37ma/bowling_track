@@ -1,4 +1,4 @@
-package org.oskar.project.bowlingTrack.resources;
+package Tutorial;
 
 import java.util.List;
 
@@ -11,9 +11,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import org.oskar.project.bowlingTrack.model.Comment;
-import org.oskar.project.bowlingTrack.service.CommentService;
 
 @Path("/")
 @Consumes(MediaType.APPLICATION_JSON)

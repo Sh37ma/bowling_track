@@ -1,11 +1,8 @@
-package org.oskar.project.bowlingTrack.service;
+package Tutorial;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.oskar.project.bowlingTrack.database.DatabaseClass;
-import org.oskar.project.bowlingTrack.model.Profile;
 
 public class ProfileService {
 	
