@@ -50,7 +50,18 @@ public class FreeDateResource {
 	@Path("/{freeDateWeekNumber}")
 	public Response updateReservation(@PathParam("freeDateWeekNumber") int weekNumber, FreeDate freeDate) {
 		
-		FreeDate updatedFreeDate = freeDateService.updateFreeDate(freeDate, weekNumber);
+		FreeDate updatedFreeDate = freeDateService.updateEntireFreeDate(freeDate, weekNumber);
+		
+		return Response.status(Status.OK).entity(updatedFreeDate).build();
+	}
+	
+	@PUT
+	@Path("/{freeDateWeekNumber}/{dayOfTheWeek}")
+	public Response updateReservation(@PathParam("freeDateWeekNumber") int weekNumber,
+									  FreeDate freeDate,
+									  @PathParam("dayOfTheWeek") String day) {
+		
+		FreeDate updatedFreeDate = freeDateService.updateDay(weekNumber, freeDate, day);
 		
 		return Response.status(Status.OK).entity(updatedFreeDate).build();
 	}

@@ -1,6 +1,8 @@
 package org.oskar.project.bowlingTrack.service;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 public class FreeDateService {
+	
+	public enum DayOfTheWeek {
+		MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
+	}
 	
 	private String collectionName = "freeDates";
 	private MongoDBClass mongoDBClass = new MongoDBClass();
@@ -112,34 +118,169 @@ public class FreeDateService {
 		return newFreeDate;
 	}
 	
-	public FreeDate updateFreeDate(FreeDate freeDate, int weekNumber) {
+	public FreeDate updateEntireFreeDate(FreeDate freeDate, int weekNumber) {
 
 		mongoDBClass.openConnection();
 		MongoDatabase database = mongoDBClass.getDatabase();
-		FreeDate freeDateToChange;
+		MongoCollection<FreeDate> col = database.getCollection(collectionName, FreeDate.class)
+				   .withCodecRegistry(pojoCodecRegistry);
+		FreeDate freeDateToChange = col.find(eq("weekNumber", weekNumber)).first();
+		
+		if(freeDateToChange == null) {
+			throw new DataNotFoundException("FreeDate with weeknumber: " + weekNumber + " not found and not updated");
+		}
 		
 		try {
-			MongoCollection<FreeDate> col = database.getCollection(collectionName, FreeDate.class)
-					   .withCodecRegistry(pojoCodecRegistry);
-			freeDateToChange= col.find(eq("weekNumber", weekNumber)).first();
+			col.updateOne(eq("weekNumber", weekNumber),combine
+					   (set("freeDates", Boolean.toString(freeDate.isFreeDates())), 
+						set("daysFree", freeDate.getDaysFree()), 
+						set("mondayHours", freeDate.getMondayHours()), 
+						set("tuesdayHours", freeDate.getTuesdayHours()), 
+						set("wednesdayHours", freeDate.getWednesdayHours()), 
+						set("thursdayHours", freeDate.getThursdayHours()), 
+						set("fridayHours", freeDate.getFridayHours()), 
+						set("saturdayHours", freeDate.getSaturdayHours()), 
+						set("sundayHours", freeDate.getSundayHours())));
 			
-			//TODO much
-			/*col.updateOne(eq("userName", userName),combine
-						   (set("userName", customer.getUserName()), 
-							set("password", customer.getPassword()), 
-							set("reservations", customer.getReservations())));
-		*/
+			updateInfoWeek(col, freeDateToChange, weekNumber);
+			
 		}
 		finally{
 			mongoDBClass.closeConnection();
 			
 		}
 		
+		
+		return freeDate;
+	}
+	
+	public FreeDate updateDay(int weekNumber, FreeDate freeDate, String day) {
+		
+		mongoDBClass.openConnection();
+		MongoDatabase database = mongoDBClass.getDatabase();
+		MongoCollection<FreeDate> col = database.getCollection(collectionName, FreeDate.class)
+				   .withCodecRegistry(pojoCodecRegistry);
+		FreeDate freeDateToChange = col.find(eq("weekNumber", weekNumber)).first();
+		
 		if(freeDateToChange == null) {
 			throw new DataNotFoundException("FreeDate with weeknumber: " + weekNumber + " not found and not updated");
 		}
 		
+		try {
+			switch(DayOfTheWeek.valueOf(day)) {
+			case MONDAY:
+				col.updateOne(eq("weekNumber", weekNumber),combine
+						   (set("mondayHours", freeDate.getMondayHours())));
+				updateInfoDay(col, freeDate, weekNumber, 0, freeDate.getMondayHours());
+				break;
+			case TUESDAY:
+				col.updateOne(eq("weekNumber", weekNumber),combine
+						   (set("tuesdayHours", freeDate.getTuesdayHours())));
+				updateInfoDay(col, freeDate, weekNumber, 1, freeDate.getTuesdayHours());
+				break;
+			case WEDNESDAY:
+				col.updateOne(eq("weekNumber", weekNumber),combine
+						   (set("wednesdayHours", freeDate.getWednesdayHours())));
+				updateInfoDay(col, freeDate, weekNumber, 2, freeDate.getWednesdayHours());
+				break;
+			case THURSDAY:
+				col.updateOne(eq("weekNumber", weekNumber),combine
+						   (set("thursdayHours", freeDate.getThursdayHours())));
+				updateInfoDay(col, freeDate, weekNumber, 3, freeDate.getThursdayHours());
+				break;
+			case FRIDAY:
+				col.updateOne(eq("weekNumber", weekNumber),combine
+						   (set("fridayHours", freeDate.getFridayHours())));
+				updateInfoDay(col, freeDate, weekNumber, 4, freeDate.getFridayHours());
+				break;
+			case SATURDAY:
+				col.updateOne(eq("weekNumber", weekNumber),combine
+						   (set("saturdayHours", freeDate.getSaturdayHours())));
+				updateInfoDay(col, freeDate, weekNumber, 5, freeDate.getSaturdayHours());
+				break;
+			case SUNDAY:
+				col.updateOne(eq("weekNumber", weekNumber),combine
+						   (set("sundayHours", freeDate.getSundayHours())));
+				updateInfoDay(col, freeDate, weekNumber, 6, freeDate.getSundayHours());
+				break;			
+			default:
+				throw new DataNotFoundException("FreeDate with weeknumber: " + weekNumber + " not updated, incorrect day");
+				
+				
+			}
+			
+			updateInfoWeek(col, freeDateToChange, weekNumber);
+			
+		}
+		finally{
+			mongoDBClass.closeConnection();
+			
+		}
+		
+		
 		return freeDate;
+		
+		
+	}
+	
+	private void updateInfoDay(MongoCollection<FreeDate> col, FreeDate freeDateToChange, int weekNumber, int dayOfTheWeek, List<Boolean> list) {
+			
+		
+		//update info in "daysFree" table in DB
+		int countTakenHours = 0;
+		
+		for(boolean b : list){
+			
+			if(b == false) {
+				countTakenHours++;
+			}
+		}
+		
+		List<Boolean> newList = freeDateToChange.getDaysFree();
+		
+		//if necessary updating info
+		if(countTakenHours >= 9 && freeDateToChange.getDaysFree().get(dayOfTheWeek)) {
+			
+			
+			newList.set(dayOfTheWeek, false);
+			
+			col.updateOne(eq("weekNumber", weekNumber),combine
+					   (set("daysFree", newList)));
+		}
+		else if(countTakenHours < 9 && !freeDateToChange.getDaysFree().get(dayOfTheWeek)) {
+			
+			newList.set(dayOfTheWeek, true);
+			
+			col.updateOne(eq("weekNumber", weekNumber),combine
+					   (set("daysFree", newList)));
+		}
+		
+	}
+	
+	
+	private void updateInfoWeek(MongoCollection<FreeDate> col, FreeDate freeDateToChange, int weekNumber) {
+		
+		//update info about "freeDates" variable in DB
+		int countTakenDays = 0;
+		
+		for(boolean b : freeDateToChange.getDaysFree()){
+			
+			if(b == false) {
+				countTakenDays++;
+			}
+		}
+		
+		//if necessary updating info about free dates in week
+		if(countTakenDays >= 7 && freeDateToChange.isFreeDates()) {
+			
+			col.updateOne(eq("weekNumber", weekNumber),combine
+					   (set("freeDates", false)));
+		}
+		else if(countTakenDays < 7 && !freeDateToChange.isFreeDates()) {
+			col.updateOne(eq("weekNumber", weekNumber),combine
+					   (set("freeDates", true)));
+		}
+		
 	}
 	
 	public FreeDate removeFreeDate(int weekNumber) {
@@ -166,7 +307,5 @@ public class FreeDateService {
 		
 		return freeDateToDelete;
 	}
-	
-	
-	
+
 }

@@ -109,13 +109,16 @@ public class CustomerService {
 
 		mongoDBClass.openConnection();
 		MongoDatabase database = mongoDBClass.getDatabase();
-		Customer customerToChange;
+		MongoCollection<Customer> col = database.getCollection(collectionName, Customer.class)
+				   .withCodecRegistry(pojoCodecRegistry);
+		
+		Customer customerToChange = col.find(eq("userName", userName)).first();
+		
+		if(customerToChange == null) {
+			throw new DataNotFoundException("Customer with number: " + userName + " not found and not updated");
+		}
 		
 		try {
-			MongoCollection<Customer> col = database.getCollection(collectionName, Customer.class)
-					   .withCodecRegistry(pojoCodecRegistry);
-			customerToChange= col.find(eq("userName", userName)).first();
-			
 			col.updateOne(eq("userName", userName),combine
 						   (set("userName", customer.getUserName()), 
 							set("password", customer.getPassword()), 
@@ -126,11 +129,6 @@ public class CustomerService {
 			mongoDBClass.closeConnection();
 			
 		}
-		
-		if(customerToChange == null) {
-			throw new DataNotFoundException("Customer with number: " + userName + " not found and not updated");
-		}
-		
 		return customer;
 	}
 	
