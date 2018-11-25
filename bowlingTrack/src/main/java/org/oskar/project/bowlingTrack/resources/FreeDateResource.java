@@ -32,14 +32,14 @@ public class FreeDateResource {
 	
 	@GET
 	@Path("/{freeDateWeekNumber}")
-	public FreeDate getCustomer(@PathParam("freeDateWeekNumber") int weekNumber) {
+	public FreeDate getFreeDate(@PathParam("freeDateWeekNumber") int weekNumber) {
 		
 		return freeDateService.getFreeDate(weekNumber);
 	}
 	
 	
 	@POST
-	public Response addCustomer(FreeDate freeDate) {
+	public Response addFreeDate(FreeDate freeDate) {
 		
 		FreeDate newFreeDate = freeDateService.addFreeDate(freeDate);
 		
@@ -48,7 +48,7 @@ public class FreeDateResource {
 	
 	@PUT
 	@Path("/{freeDateWeekNumber}")
-	public Response updateReservation(@PathParam("freeDateWeekNumber") int weekNumber, FreeDate freeDate) {
+	public Response updateFreeDate(@PathParam("freeDateWeekNumber") int weekNumber, FreeDate freeDate) {
 		
 		FreeDate updatedFreeDate = freeDateService.updateEntireFreeDate(freeDate, weekNumber);
 		
@@ -57,7 +57,7 @@ public class FreeDateResource {
 	
 	@PUT
 	@Path("/{freeDateWeekNumber}/{dayOfTheWeek}")
-	public Response updateReservation(@PathParam("freeDateWeekNumber") int weekNumber,
+	public Response updateFreeDate(@PathParam("freeDateWeekNumber") int weekNumber,
 									  FreeDate freeDate,
 									  @PathParam("dayOfTheWeek") String day) {
 		
@@ -68,7 +68,7 @@ public class FreeDateResource {
 	
 	@DELETE
 	@Path("/{freeDateWeekNumber}")
-	public Response deleteReservation(@PathParam("freeDateWeekNumber") int weekNumber) {
+	public Response deleteFreeDate(@PathParam("freeDateWeekNumber") int weekNumber) {
 		
 		FreeDate deletedFreeDate = freeDateService.removeFreeDate(weekNumber);
 		

@@ -8,7 +8,7 @@ public class FreeDate {
 	
 	private ObjectId id;
 	private int weekNumber;
-	private boolean freeDates;
+	private Boolean freeDates;
 	private List<Boolean> daysFree;
 	private List<Boolean> mondayHours;
 	private List<Boolean> tuesdayHours;
@@ -51,10 +51,10 @@ public class FreeDate {
 	public void setWeekNumber(int weekNumber) {
 		this.weekNumber = weekNumber;
 	}
-	public boolean isFreeDates() {
+	public Boolean isFreeDates() {
 		return freeDates;
 	}
-	public void setFreeDates(boolean freeDates) {
+	public void setFreeDates(Boolean freeDates) {
 		this.freeDates = freeDates;
 	}
 	public List<Boolean> getDaysFree() {

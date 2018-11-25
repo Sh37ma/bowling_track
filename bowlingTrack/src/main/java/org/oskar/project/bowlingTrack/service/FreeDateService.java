@@ -132,7 +132,7 @@ public class FreeDateService {
 		
 		try {
 			col.updateOne(eq("weekNumber", weekNumber),combine
-					   (set("freeDates", Boolean.toString(freeDate.isFreeDates())), 
+					   (set("freeDates", freeDate.isFreeDates()), 
 						set("daysFree", freeDate.getDaysFree()), 
 						set("mondayHours", freeDate.getMondayHours()), 
 						set("tuesdayHours", freeDate.getTuesdayHours()), 
@@ -145,12 +145,10 @@ public class FreeDateService {
 			updateInfoWeek(col, freeDateToChange, weekNumber);
 			
 		}
-		finally{
+		finally{ 
 			mongoDBClass.closeConnection();
 			
 		}
-		
-		
 		return freeDate;
 	}
 	
@@ -166,49 +164,57 @@ public class FreeDateService {
 			throw new DataNotFoundException("FreeDate with weeknumber: " + weekNumber + " not found and not updated");
 		}
 		
+		day = day.toUpperCase();
+		
 		try {
 			switch(DayOfTheWeek.valueOf(day)) {
 			case MONDAY:
 				col.updateOne(eq("weekNumber", weekNumber),combine
 						   (set("mondayHours", freeDate.getMondayHours())));
-				updateInfoDay(col, freeDate, weekNumber, 0, freeDate.getMondayHours());
+				//get changed document from DB after changing one table, in http we send only one table, so we can't read rest from http
+				freeDateToChange = col.find(eq("weekNumber", weekNumber)).first();
+				updateInfoDay(col, freeDateToChange, weekNumber, 0, freeDateToChange.getMondayHours());
 				break;
 			case TUESDAY:
 				col.updateOne(eq("weekNumber", weekNumber),combine
 						   (set("tuesdayHours", freeDate.getTuesdayHours())));
-				updateInfoDay(col, freeDate, weekNumber, 1, freeDate.getTuesdayHours());
+				freeDateToChange = col.find(eq("weekNumber", weekNumber)).first();
+				updateInfoDay(col, freeDateToChange, weekNumber, 1, freeDateToChange.getTuesdayHours());
 				break;
 			case WEDNESDAY:
 				col.updateOne(eq("weekNumber", weekNumber),combine
 						   (set("wednesdayHours", freeDate.getWednesdayHours())));
-				updateInfoDay(col, freeDate, weekNumber, 2, freeDate.getWednesdayHours());
+				freeDateToChange = col.find(eq("weekNumber", weekNumber)).first();
+				updateInfoDay(col, freeDateToChange, weekNumber, 2, freeDateToChange.getWednesdayHours());
 				break;
 			case THURSDAY:
 				col.updateOne(eq("weekNumber", weekNumber),combine
 						   (set("thursdayHours", freeDate.getThursdayHours())));
-				updateInfoDay(col, freeDate, weekNumber, 3, freeDate.getThursdayHours());
+				freeDateToChange = col.find(eq("weekNumber", weekNumber)).first();
+				updateInfoDay(col, freeDateToChange, weekNumber, 3, freeDateToChange.getThursdayHours());
 				break;
 			case FRIDAY:
 				col.updateOne(eq("weekNumber", weekNumber),combine
 						   (set("fridayHours", freeDate.getFridayHours())));
-				updateInfoDay(col, freeDate, weekNumber, 4, freeDate.getFridayHours());
+				freeDateToChange = col.find(eq("weekNumber", weekNumber)).first();
+				updateInfoDay(col, freeDateToChange, weekNumber, 4, freeDateToChange.getFridayHours());
 				break;
 			case SATURDAY:
 				col.updateOne(eq("weekNumber", weekNumber),combine
 						   (set("saturdayHours", freeDate.getSaturdayHours())));
-				updateInfoDay(col, freeDate, weekNumber, 5, freeDate.getSaturdayHours());
+				freeDateToChange = col.find(eq("weekNumber", weekNumber)).first();
+				updateInfoDay(col, freeDateToChange, weekNumber, 5, freeDateToChange.getSaturdayHours());
 				break;
 			case SUNDAY:
 				col.updateOne(eq("weekNumber", weekNumber),combine
 						   (set("sundayHours", freeDate.getSundayHours())));
-				updateInfoDay(col, freeDate, weekNumber, 6, freeDate.getSundayHours());
+				freeDateToChange = col.find(eq("weekNumber", weekNumber)).first();
+				updateInfoDay(col, freeDateToChange, weekNumber, 6, freeDateToChange.getSundayHours());
 				break;			
 			default:
 				throw new DataNotFoundException("FreeDate with weeknumber: " + weekNumber + " not updated, incorrect day");
 				
-				
 			}
-			
 			updateInfoWeek(col, freeDateToChange, weekNumber);
 			
 		}
@@ -216,10 +222,7 @@ public class FreeDateService {
 			mongoDBClass.closeConnection();
 			
 		}
-		
-		
 		return freeDate;
-		
 		
 	}
 	
