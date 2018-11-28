@@ -1,0 +1,19 @@
+h2 {
+    color: black;
+    display: block;
+    font: bold italic 50px Helvetica;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    padding: 10px;
+  }
+  
+  .blurry-text {
+    color: transparent;
+    text-shadow: 0 0 7px rgb(0, 0, 0);
+ }
+  
+  html { 
+    background: #222; 
+    color: white; 
+    text-align: center; 
+  }

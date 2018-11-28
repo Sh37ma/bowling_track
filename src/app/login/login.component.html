@@ -1,0 +1,23 @@
+<h2 class="blurry-text"> {{title}}</h2>
+<p>
+  Nazwa użytkownika: <input type="text" [(ngModel)]="userName">
+  Hasło: <input type="text" [(ngModel)]="password">
+</p>
+<button (click)="login()">Sign In</button>
+
+<br><br><br>
+
+<h2 class="blurry-text">Nie posiadasz konta? stwórz</h2>
+<p>
+    Nazwa użytkownika: <input type="text" [(ngModel)]="userName">
+</p>
+<p>
+    Hasło: <input type="text" [(ngModel)]="password">
+</p>
+<p>
+    Telefon: <input type="text" [(ngModel)]="phoneNumber">
+</p>
+ 
+    
+
+<button (click)="register()">Register</button>

@@ -1,0 +1,32 @@
+<div *ngIf="customer; else no_customer">
+  <h2 class="blurry-text"> Witaj {{customer.userName}}</h2>
+
+  <div *ngIf="customer.reservations.length; else other_content">
+    <p>Twoja liczba rezerwacji: {{customer.reservations.length}}</p>
+    <p></p>
+    <button (click)="show()">Wyswietl wszystkie rezerwacje</button>
+    <p></p>
+    <button (click)="book()">Dodaj rezerwacje</button>
+    <p>Jesli chcesz usunąć rezerwaje, podaj jej numer: 
+      <input type="text" [ngModel]="numberOfReservation"> 
+      <button (click)="delete()">Usun rezerwacje</button>
+    </p>
+    <p>Kliknij aby się wylogować i wrócić na stronę główną <button (click)="logOut()">wyloguj</button></p>
+  </div>
+
+  <ng-template #other_content>
+      <p>Niestety nie posiadasz aktualnie żadnej rezerwacji</p>
+      <p>Zachęcamy Cię do złożenia nowej</p>
+      <button (click)="book()">Dodaj rezerwacje</button>
+
+  <br><br><br><br>
+
+      <p>Zapoznać się z aktualną ofertą możesz na <a routerLink="/home">stronie głównej</a></p>
+      <p>Jeśli wciąż masz wątpliwości lub pytani zapraszamy do kontaktu</p>
+  </ng-template>
+</div>
+<ng-template #no_customer>
+    <p>Niestety nie udało się poprawnie zalogować</p>
+    <p><a routerLink="/login">Spróbuj ponownie</a></p>
+    <p>Lub wróć do <a routerLink="/home">strony głównej</a></p>
+</ng-template>

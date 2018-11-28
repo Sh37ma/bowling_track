@@ -7,8 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainNavBarComponent implements OnInit {
 
+  currentDate = new Date();
+  dataMessage: string = this.currentDate.toDateString() + ' ' + this.currentDate.toLocaleTimeString();;
   
-  constructor() { }
+  constructor() {
+    setInterval(()=>{
+      let currentDate = new Date();
+      this.dataMessage = currentDate.toDateString() + ' ' + currentDate.toLocaleTimeString();
+    }, 1000)
+   }
 
   ngOnInit() {
   }

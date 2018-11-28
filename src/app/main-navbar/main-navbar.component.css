@@ -1,6 +1,7 @@
 /* Navbar */
 .nav-item{
  font-size: 150%;
+ font-weight: bold;
 }
 
 .bg-custom{
