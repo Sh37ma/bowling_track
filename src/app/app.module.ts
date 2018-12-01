@@ -7,6 +7,7 @@ import { MainNavBarComponent } from './main-navbar/main-navbar.component';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
 import { AppComponent } from './app.component';
 import { MainPageComponent } from './main-page/main-page.component';
@@ -66,7 +67,8 @@ import { CustomerService } from './customer/customer.service';
     ]),
     ScrollToModule.forRoot(),
     BrowserAnimationsModule, // required animations module
-    ToastrModule.forRoot() // ToastrModule added
+    ToastrModule.forRoot(), // ToastrModule added
+    AngularFontAwesomeModule
   ],
   providers: [CustomerService],
   bootstrap: [AppComponent]

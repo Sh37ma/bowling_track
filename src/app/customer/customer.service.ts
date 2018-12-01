@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ICustomer } from '../customer/customer';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from "rxjs/operators";
-import { BehaviorSubject } from 'rxjs';
-import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 
 @Injectable({
   providedIn: 'root'
@@ -20,12 +18,11 @@ export class CustomerService {
   constructor(private http: HttpClient) { }
 
     getCustomer(userName : string) : Observable<ICustomer> {
-        return this.http.get<ICustomer>(this._url + userName) 
-        .pipe(map((response: ICustomer) => response as ICustomer));        
+        return this.http.get<ICustomer>(this._url + userName);
     }
 
-    addCustomer(userName : string) : Observable<ICustomer> {
-      return this.http.get<ICustomer>(this._url + userName) 
+    addCustomer(customer : ICustomer) : Observable<ICustomer>{
+       return this.http.post<ICustomer>(this._url, customer) 
       .pipe(map((response: ICustomer) => response as ICustomer));        
     }
 

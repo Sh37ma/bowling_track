@@ -17,3 +17,12 @@ h2 {
     color: white; 
     text-align: center; 
   }
+
+  p{
+    font: bold 16px Georgia;
+  } 
+
+  .main{
+    text-align: center;
+    background: linear-gradient(110deg, rgb(196, 183, 182) 33%, rgba(25, 0, 247, 0) 33%), linear-gradient(110deg, #dbbcbc 66%, #dacda2 66%);
+  }

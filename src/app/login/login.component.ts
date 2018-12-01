@@ -12,44 +12,52 @@ import { ToastrService } from 'ngx-toastr';
 export class LoginComponent implements OnInit {
 
   title : string = "login";
-  userName : string = "user";
-  password : string = "user";
-  phoneNumber : number;
+  userNameLogin : string;
+  passwordLogin : string;
+  userNameRegister : string;
+  passwordRegister : string;
+  passwordRegister2 : string;
   customer : ICustomer;
 
   constructor(private service : CustomerService, private router: Router, private toastrService: ToastrService) {
   }
 
   login(){
-      this.service.getCustomer(this.userName).subscribe((res: ICustomer) => {
-        this.customer = res;
-        this.service.changeMessage(this.customer);
-
-        if(this.password == this.customer.password){
+    if(this.userNameLogin != null && this.passwordLogin != null){
+      //TODO chandle error when user not found
+      this.service.getCustomer(this.userNameLogin).subscribe((response: ICustomer) => {
+        this.customer = response;
+        console.log(response)
+        if(this.passwordLogin == this.customer.password){
+          this.service.changeMessage(this.customer);
           this.router.navigate(['customer'])
           this.toastrService.success('Witaj ' + this.customer.userName, 'Zalogowano');
-         // this.toastrService.info('Hello world!', 'Toastr fun!');
-         // this.toastrService.error('Hello world!', 'Toastr fun!');
-         // this.toastrService.warning('Hello world!', 'Toastr fun!');
-          
+         // info, errorm warning
         }
-      });
+      })
+    }
+     else{
+        this.toastrService.error('Wprowadź dane ', 'Pola logowania są puste');
+     }
   }
   
-//TODO
-  register(){
-    this.service.getCustomer(this.userName).subscribe((res: ICustomer) => {
-      this.customer = res;
 
-      if(true){
-        this.toastrService.success('Rejestracja przebiegła pomyślnie', 'Udało się');
-        
-      }
-    });
-}
+  register(){
+    if(this.passwordRegister == this.passwordRegister2 && this.userNameRegister != null && this.passwordRegister != null){
+      this.customer.userName = this.userNameRegister;
+      this.customer.password = this.passwordRegister;
+      this.customer.reservations = [];
+      
+      this.service.addCustomer(this.customer).subscribe(responce => this.customer = responce);
+      this.toastrService.success('Zaloguj się nowymi danymi', 'Rejestracja przebiegła pomyślnie');
+    }
+    else{
+      this.toastrService.error('Hasła muszą się zgadzać i dane nie mogą być puste', 'Upsss coś poszło nie tak - spróbuj jeszcze raz');
+    }
+  }
 
   ngOnInit() {
     this.service.currentMessage.subscribe(message => this.customer = message);
+    this.customer = {} as ICustomer ;
   }
-
 }

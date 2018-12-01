@@ -52,7 +52,7 @@ export class CustomerComponent implements OnInit {
       this.service.getCustomer(this.customer.userName).subscribe((res: ICustomer) => {
           //delete customer from message to unable hacking
           this.router.navigate(['home'])
-          this.toastrService.success('Poprawnie', 'Wylogowano');
+          this.toastrService.info('Poprawnie', 'Wylogowano');
           this.service.changeMessage(null);
       });
     }
@@ -60,11 +60,11 @@ export class CustomerComponent implements OnInit {
   ngOnInit() {
     this.service.currentMessage.subscribe(message => this.customer = message);
     //only for development time
-    this.customer = {
-      userName: "user",
-      password: "user",
-      reservations: [1, 2]
-    }
+    // this.customer = {
+    //   userName: "test",
+    //   password: "test",
+    //   reservations: [3]
+    // }
   }
 
 }
