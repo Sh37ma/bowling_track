@@ -1,24 +1,22 @@
-<div class = "main">
+<div class = "bg-image">
+</div>
+<div class="bg-text">
     <h2 class="blurry-text"> 
         {{title}}
-        <fa name="cog" animation="spin"></fa>
     </h2>
     
     <p>
-      Nazwa użytkownika: <input type="text" placeholder="Nazwa" [(ngModel)]="userNameLogin">
-      Hasło: <input type="text" placeholder="Hasło" [(ngModel)]="passwordLogin">
-      <i class="fas fa-sign-in-alt" style="font-size: 30px"></i>
+    Nazwa użytkownika: <input type="text" placeholder="Nazwa" [(ngModel)]="userNameLogin">
+    Hasło: <input type="text" placeholder="Hasło" [(ngModel)]="passwordLogin">
     </p>
-
+    <!-- <i class="fas fa-sign-in-alt" style="font-size: 30px"></i> -->
     <button type="button" class="btn btn-primary" (click)="login()">Sign In</button>
     <br><br>
     
     <br><br>
 
     <h2 class="blurry-text">Nie posiadasz konta?</h2>
-    <h2 class="blurry-text">
-            Stwórz
-    </h2>
+    <h2 class="blurry-text">Stwórz</h2>
     <p>
         Nazwa użytkownika: <input type="text" placeholder="Nazwa" [(ngModel)]="userNameRegister">
     </p>
@@ -28,10 +26,10 @@
     <p>
         Powtórz hasło: <input type="text" placeholder="Powtórz hasło" [(ngModel)]="passwordRegister2">
     </p>
-     <fa name="cog" animation="spin" class = "spin"></fa>
-     <button type="button" class="btn btn-success" (click)="register()">Register</button>
+    <button type="button" class="btn btn-success" (click)="register()">Register</button>
     
-     <br><br>
+    <br><br>
     
-     <p>Wróć do <a routerLink="/home">strony głównej</a></p>
+    <p>Wróć do <a routerLink="/home">strony głównej</a></p>
 </div>
+

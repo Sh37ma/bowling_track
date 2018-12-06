@@ -1,11 +1,35 @@
-<div class = "main">
+<div class = "bg-image">
+</div>
+<div class = "bg-text">
     <div *ngIf="customer; else no_customer">
-        <h2 class="blurry-text"> Witaj {{customer.userName}}</h2>
-      
+          <h2 class="blurry-text">Witaj</h2>
+          <h2 class="blurry-text2">{{customer.userName}}</h2>
+        
         <div *ngIf="customer.reservations && customer.reservations.length; else other_content">
           <p>Twoja liczba rezerwacji: {{customer.reservations.length}}</p>
 
-          <button type="button" class="btn btn-warning" (click)="show()">Wyswietl wszystkie rezerwacje</button>
+          <button type="button" class="btn btn-warning" (click)="show()" *ngIf="showButton">Wyswietl wszystkie rezerwacje</button>
+          <ng-container *ngIf="!showButton">
+              <table>
+                  <tr>
+                    <th>Imie</th>
+                    <th>Nazwisko</th> 
+                    <th>Data</th>
+                    <th>Telefon</th>
+                  </tr>
+                  <tr *ngFor = "let r of reservation">
+                    <td>{{r.firstName}}</td>
+                    <td>{{r.lastName}}</td> 
+                    <td>{{r.date}}</td>
+                    <td>{{r.telephone}}</td>
+                  </tr>
+                </table>
+            <!-- <div *ngFor = "let r of reservation">
+              <pre style = "display: inline-block">{{r.firstName}} {{r.lastName}} {{r.date}} {{r.telephone}}</pre> 
+            </div> -->
+            <button type="button" class="btn btn-warning" (click)="show()">Schowaj rezerwacje</button>
+          </ng-container>  
+          
           <br><br><br>
 
           <button type="button" class="btn btn-success" (click)="book()">Dodaj rezerwacje</button>

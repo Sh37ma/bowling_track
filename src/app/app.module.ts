@@ -22,6 +22,7 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { CustomerComponent } from './customer/customer.component';
 import { CustomerService } from './customer/customer.service';
+import { ReservationService } from './reservation/reservation.service';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,10 @@ import { CustomerService } from './customer/customer.service';
     ToastrModule.forRoot(), // ToastrModule added
     AngularFontAwesomeModule
   ],
-  providers: [CustomerService],
+  providers: [
+    CustomerService,
+    ReservationService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

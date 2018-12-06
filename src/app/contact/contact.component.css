@@ -1,14 +1,14 @@
 .progress{
     height: 25px;
 }
-
 .main{
-    background: linear-gradient(110deg, rgb(203, 206, 30) 33%, rgba(25, 0, 247, 0) 33%), linear-gradient(110deg, #1e0ad6 66%, #26c211 66%);
+    background: radial-gradient(110deg, rgba(43, 46, 65, 0.158) 33%,
+     rgba(25, 0, 247, 0) 33%), radial-gradient(110deg, #0000002f 66%, #2b20202f 66%);
 }
-
 h1, h2{
     color:azure;
     font-weight: bold;
+    font: bold italic 50px Georgia;
 }
 
 .left{

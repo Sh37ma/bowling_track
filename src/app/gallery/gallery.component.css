@@ -3,25 +3,46 @@
 }
 
 .main{
-    background: linear-gradient(110deg, rgb(59, 88, 255) 33%, rgba(25, 0, 247, 0) 33%), linear-gradient(110deg, #b61919 66%, #4edb32 66%);
+    background: linear-gradient(110deg, rgba(59, 88, 255, 0.158) 33%, rgba(25, 0, 247, 0) 33%), linear-gradient(110deg, #b619192f 66%, #4dc2362f 66%);
 }
 
 h1, h2{
     color:azure;
     font-weight: bold;
+    font: bold italic 50px Georgia;
 }
 
-.left{
-    text-align: left;
-    /* display: inline-block; */
+.top-left{
+    height: 400px;
+    width: 700px;
+    position: relative;
+    left: -200px;
+    border: 3px solid #73AD21;
+    
 }
 
-.center{
-    text-align: center;
-    /* display: inline-block; */
+.top-right{
+    height: 400px;
+    width: 700px;
+    position: relative;
+    right: -200px;
+    border: 3px solid rgb(33, 59, 173);
 }
 
-.right{
-    text-align: right;
-    /* display: inline-block; */
+.bot-left{
+    height: 400px;
+    width: 700px;
+    position: relative;
+    left: -70px;
+    border: 3px solid rgb(33, 59, 173);
+    margin-top: 20px;
+}
+
+.bot-right{
+    height: 400px;
+    width: 700px;
+    position: relative;
+    right: -70px;
+    border: 3px solid #73AD21;
+    margin-top: 20px;
 }

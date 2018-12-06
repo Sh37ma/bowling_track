@@ -3,6 +3,8 @@ import { ICustomer } from '../customer/customer';
 import { CustomerService } from '../customer/customer.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ReservationService } from '../reservation/reservation.service';
+import { IReservation } from '../reservation/reservation';
 
 
 @Component({
@@ -11,24 +13,30 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./customer.component.css']
 })
 export class CustomerComponent implements OnInit {
-
   customer : ICustomer;
-  numberOfReservation : number;
+  reservation : IReservation[];
+  oneReservation : IReservation;
+  showButton : boolean;
 
-  constructor( private service : CustomerService, private router: Router, private toastrService: ToastrService) {
+  constructor( private customerService : CustomerService, private reservationService : ReservationService, private router: Router, private toastrService: ToastrService) {
 
   }
 
   show(){
-      //this.service.showReservation(this.customer.userName).subscribe((res: ICustomer) => {
-       //TODO
-        //get reservations details from collection reservations and create readable date = Month week day
-        //for all reservations
-     // });
+      for(let reservationNumber of this.customer.reservations){
+        this.reservationService.getReservation(reservationNumber).subscribe((responce: IReservation) => {
+          this.reservation.push(responce);
+          //get reservations details from collection reservations and create readable date = Month week day
+          // for all reservations
+        });
+        //this.reservation.push(this.oneReservation);
+      }
+     
+     this.showButton = !this.showButton;
     }
 
     book(){
-     // this.service.addReservation(this.customer.userName).subscribe((res: ICustomer) => {
+     // this.customerService.addReservation(this.customer.userName).subscribe((res: ICustomer) => {
        //TODO
        //add to array  - update customer collection
         //add new reservation to collection reservations 
@@ -38,7 +46,7 @@ export class CustomerComponent implements OnInit {
 
 
     delete(){
-      //this.service.deleteReservation(this.customer.userName).subscribe((res: ICustomer) => {
+      //this.customerService.deleteReservation(this.customer.userName).subscribe((res: ICustomer) => {
         //TODO
         //numberOfReservation - value
         //delete from array - update customer collection
@@ -49,22 +57,30 @@ export class CustomerComponent implements OnInit {
     }
 
     logOut(){
-      this.service.getCustomer(this.customer.userName).subscribe((res: ICustomer) => {
+      
           //delete customer from message to unable hacking
           this.router.navigate(['home'])
           this.toastrService.info('Poprawnie', 'Wylogowano');
-          this.service.changeMessage(null);
-      });
+          this.customerService.changeMessage(null);
+      
     }
-     
-  ngOnInit() {
-    this.service.currentMessage.subscribe(message => this.customer = message);
-    //only for development time
-    // this.customer = {
-    //   userName: "test",
-    //   password: "test",
-    //   reservations: [3]
-    // }
-  }
 
-}
+  ngOnInit() {
+    this.customerService.currentMessage.subscribe(message => this.customer = message);
+    //only for development time
+    this.reservation =  new Array(0);
+    this.showButton = true;
+    this.customer = {
+      userName: "test",
+      password: "test",
+      reservations: [3, 1]
+    }
+    // this.reservation.push({  number : 1,
+    //   firstName : "Ziom",
+    //     lastName : "Mega",
+    //   date : "Poniedzialek",
+    //   telephone : 609609609,  });  
+      // console.log(this.reservation[0])
+  
+  }
+} 

@@ -47,9 +47,10 @@ public class CustomerResource {
 		return Response.status(Status.CREATED).entity(newCustomer).build();
 	}
 	
+	
 	@PUT
 	@Path("/{customerUserName}")
-	public Response updateReservation(@PathParam("customerUserName") String userName, Customer customer) {
+	public Response updateCustomer(@PathParam("customerUserName") String userName, Customer customer) {
 		
 		Customer updatedCustomer = customerService.updateCustomer(customer, userName);
 		
@@ -58,7 +59,7 @@ public class CustomerResource {
 	
 	@DELETE
 	@Path("/{customerUserName}")
-	public Response deleteReservation(@PathParam("customerUserName") String userName) {
+	public Response deleteCustomer(@PathParam("customerUserName") String userName) {
 		
 		Customer deletedCustomer = customerService.removeCustomer(userName);
 		

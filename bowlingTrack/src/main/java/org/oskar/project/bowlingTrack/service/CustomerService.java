@@ -3,6 +3,7 @@ package org.oskar.project.bowlingTrack.service;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
+import static com.mongodb.client.model.Projections.excludeId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class CustomerService {
 		Customer customer;
 		
 		try {
-			customer = col.find(eq("userName", userName)).first();
+			customer = col.find(eq("userName", userName)).projection(excludeId()).first();
 			
 		}
 		finally{
@@ -77,7 +78,7 @@ public class CustomerService {
 		}
 		
 		if(customer == null) {
-			throw new DataNotFoundException("Customer with number: " + userName + " not found");
+			throw new DataNotFoundException("Customer with userName: " + userName + " not found");
 		}
 		
 		return customer;
