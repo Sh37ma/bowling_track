@@ -11,6 +11,10 @@ h1, h2{
     font: bold italic 50px Georgia;
 }
 
+h4,h3{
+    font: bold italic Georgia;
+}
+
 .left{
     text-align: left;
     /* display: inline-block; */
