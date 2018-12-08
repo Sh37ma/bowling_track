@@ -21,6 +21,9 @@ export class ReservationService {
         return this.http.get<IReservation>(this._url + number);
     }
 
+    deleteReservation(number : number) : Observable<IReservation> {
+      return this.http.delete<IReservation>(this._url + number);
+  }
     
 
     changeMessage(message : IReservation){

@@ -12,21 +12,21 @@
           <ng-container *ngIf="!showButton">
               <table>
                   <tr>
+                    <th>Numer</th>
                     <th>Imie</th>
                     <th>Nazwisko</th> 
                     <th>Data</th>
                     <th>Telefon</th>
                   </tr>
-                  <tr *ngFor = "let r of reservation">
+                  <tr *ngFor = "let r of reservationToshow">
+                    <td>{{r.number}}</td>
                     <td>{{r.firstName}}</td>
                     <td>{{r.lastName}}</td> 
                     <td>{{r.date}}</td>
                     <td>{{r.telephone}}</td>
                   </tr>
                 </table>
-            <!-- <div *ngFor = "let r of reservation">
-              <pre style = "display: inline-block">{{r.firstName}} {{r.lastName}} {{r.date}} {{r.telephone}}</pre> 
-            </div> -->
+                <br>
             <button type="button" class="btn btn-warning" (click)="show()">Schowaj rezerwacje</button>
           </ng-container>  
           
@@ -36,9 +36,9 @@
           <br><br><br>
 
           <p>Jesli chcesz usunąć rezerwaje, podaj jej numer: 
-            <br>
-            <input type="text" placeholder="Numer" [ngModel]="numberOfReservation" style = "width: 60px;"> 
-            <br>
+            <br> <br>
+            <input type="text" placeholder="Numer" [(ngModel)]="reservationToDelete" style = "width: 60px;"> 
+            <br> <br>
             <button type="button" class="btn btn-danger" (click)="delete()">Usun rezerwacje</button>
             <br><br>
           </p>

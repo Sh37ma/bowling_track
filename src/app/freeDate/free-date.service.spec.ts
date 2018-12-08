@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { FreeDataService } from './free-data.service';
+import { FreeDateService } from './free-date.service';
 
-describe('FreeDataService', () => {
+describe('FreeDateService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: FreeDataService = TestBed.get(FreeDataService);
+    const service: FreeDateService = TestBed.get(FreeDateService);
     expect(service).toBeTruthy();
   });
 });

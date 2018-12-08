@@ -22,13 +22,12 @@ export class CustomerService {
     }
 
     addCustomer(customer : ICustomer) : Observable<ICustomer>{
-       return this.http.post<ICustomer>(this._url, customer) 
+       return this.http.post<ICustomer>(this._url, customer)
       .pipe(map((response: ICustomer) => response as ICustomer));        
     }
 
-    updateCustomer(userName : string) : Observable<ICustomer> {
-      return this.http.get<ICustomer>(this._url + userName) 
-      .pipe(map((response: ICustomer) => response as ICustomer));        
+    updateCustomer(userName : string, customer : ICustomer) : Observable<ICustomer> {
+      return this.http.put<ICustomer>(this._url + userName, customer);        
     }
 
     changeMessage(message : ICustomer){

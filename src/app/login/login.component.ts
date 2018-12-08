@@ -12,8 +12,8 @@ import { ToastrService } from 'ngx-toastr';
 export class LoginComponent implements OnInit {
 
   title : string = "login";
-  userNameLogin : string;
-  passwordLogin : string;
+  userNameLogin : string = "user2";
+  passwordLogin : string = "user2";
   userNameRegister : string;
   passwordRegister : string;
   passwordRegister2 : string;

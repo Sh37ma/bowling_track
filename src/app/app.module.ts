@@ -23,6 +23,7 @@ import { HomeComponent } from './home/home.component';
 import { CustomerComponent } from './customer/customer.component';
 import { CustomerService } from './customer/customer.service';
 import { ReservationService } from './reservation/reservation.service';
+import { FreeDateService } from './freeDate/free-date.service';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { ReservationService } from './reservation/reservation.service';
   ],
   providers: [
     CustomerService,
-    ReservationService
+    ReservationService,
+    FreeDateService
   ],
   bootstrap: [AppComponent]
 })
