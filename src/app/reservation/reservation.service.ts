@@ -21,10 +21,13 @@ export class ReservationService {
         return this.http.get<IReservation>(this._url + number);
     }
 
+    addReservation(reservation : IReservation) : Observable<IReservation> {
+      return this.http.post<IReservation>(this._url, reservation);
+  }
+
     deleteReservation(number : number) : Observable<IReservation> {
       return this.http.delete<IReservation>(this._url + number);
-  }
-    
+    }
 
     changeMessage(message : IReservation){
       this.messageSource.next(message);

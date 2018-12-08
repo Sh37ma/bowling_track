@@ -1,8 +1,8 @@
 export interface IReservation {
     number : number;
-	firstName : string;
-    lastName : string;
-	date : string;
+	firstName : String;
+    lastName : String;
+	date : String;
 	telephone : number;
 }
 

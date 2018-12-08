@@ -32,7 +32,44 @@
           
           <br><br><br>
 
-          <button type="button" class="btn btn-success" (click)="book()">Dodaj rezerwacje</button>
+          <button type="button" class="btn btn-success" (click)="changeButtonAdd()" *ngIf="showAdd">Dodaj rezerwacje</button>
+          <ng-container *ngIf="!showAdd">
+
+            <h3>Wolne terminy</h3>
+            <h5>Wybierz miesiąc:</h5>
+            <select [(ngModel)]="selectedMonth">
+                <option value="Styczeń">Styczeń</option>
+                <option value="Luty">Luty</option>
+            </select>
+            <h5>Wybierz tydzień:</h5>
+            <select [(ngModel)]="selectedWeek" (click)="showTermin()">
+                <option value="1">Pierwszy tydzień</option>
+                <option value="2">Drugi tydzień</option>
+                <option value="3">Trzeci tydzień</option>
+                <option value="4">Czwarty tydzień</option>
+            </select>
+            <br><br>
+            <h5>Wybierz Dzień:</h5>
+            <select [(ngModel)]="selectedDay" (click)="showHours()">
+                <option value={{x}} *ngFor = "let x of weekTable">{{x}}</option>
+            </select>
+
+            <h5>Wybierz Godzine:</h5>
+            <select [(ngModel)]="selectedHour" *ngIf = "selectedDay">
+                <option value={{y}} *ngFor = "let y of hoursTable">{{y}}</option>
+            </select>
+
+            <br><br>
+            <input type="text" placeholder="Imię" [(ngModel)]="addFirstName" style = "width: 100px;"> 
+            <input type="text" placeholder="Nazwisko" [(ngModel)]="addLastName" style = "width: 100px;"> 
+            <input type="text" placeholder="Telefon" [(ngModel)]="addTelephone" style = "width: 100px;"> 
+            <br><br>
+
+            <button type="button" class="btn btn-success" (click)="book()">Dodaj</button>
+            <br><br>
+
+          <button type="button" class="btn btn-warning" (click)="changeButtonAdd()">Anuluj Dodawanie</button>
+          </ng-container>  
           <br><br><br>
 
           <p>Jesli chcesz usunąć rezerwaje, podaj jej numer: 

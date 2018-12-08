@@ -7,7 +7,7 @@ import { ReservationService } from '../reservation/reservation.service';
 import { IReservation } from '../reservation/reservation';
 import { IFreeDate } from '../freeDate/freeDate';
 import { FreeDateService } from '../freeDate/free-date.service';
-
+import { Days } from '../freeDate/enum';
 
 @Component({
   selector: 'app-customer',
@@ -18,11 +18,23 @@ export class CustomerComponent implements OnInit {
   customer : ICustomer;
   freeData: IFreeDate;
   reservationToshow : IReservation[];
-  oneReservation : IReservation;
   showButton : boolean;
+  showAdd : boolean;
   reservationToDelete : number;
   weekNumber : number;
   dayOfWeek : String;
+  selectedWeek : number;
+  selectedMonth : String;
+  selectedDay : number;
+  selectedHour : number;
+  dataToShow : IFreeDate;
+  weekTable : String[];
+  hoursTable : number[];
+  addFirstName : String;
+  addLastName : String;
+  addTelephone : number;
+  newReservation : IReservation;
+  
 
   constructor( private customerService : CustomerService, private freeDateService : FreeDateService, private reservationService : ReservationService, private router: Router, private toastrService: ToastrService) {
     this.freeDateService.getFreeDate(1).subscribe((response: IFreeDate) => {
@@ -34,21 +46,183 @@ export class CustomerComponent implements OnInit {
   show(){
     this.reservationToshow =  new Array(0);
       for(let reservationNumber of this.customer.reservations){
-        this.reservationService.getReservation(reservationNumber).subscribe((responce: IReservation) => {
-          this.reservationToshow.push(responce);
+        this.reservationService.getReservation(reservationNumber).subscribe((response: IReservation) => {
+
+//TODO
           //create readable date = Month week day
+          response.date = this.makeReadable(response.date);
+          this.reservationToshow.push(response);
+
         });
       }
      this.showButton = !this.showButton;
     }
 
+    makeReadable(data : String) : String{
+      let ready = "";
+      let splitted = data.split(" ", 4);
+
+      ready += splitted[3];
+      ready += " ";
+      ready += "Nr. tygodnia: ";
+      ready += splitted[0];
+      ready += " ";
+      ready += Days[splitted[1]];
+      ready += " ";
+      ready += "Godzina: ";
+      ready += splitted[2];
+      return ready;
+    }
+
+    changeButtonAdd(){
+      this.showAdd = !this.showAdd;
+    }
+
+    showTermin(){
+      this.weekTable = new Array(0);
+      this.freeDateService.getFreeDate(this.selectedWeek).subscribe((response: IFreeDate) => {
+        this.dataToShow = response;
+      
+      let index = 0;
+      for(let day of this.dataToShow.daysFree){
+        index ++;
+        if(day){
+          this.weekTable.push(Days[index]);
+        }
+      }
+    });
+    }
+
+    showHours(){
+      var array = new Array(0);
+      this.hoursTable = new Array(0);
+
+      switch(+Days[this.selectedDay]){
+        case 1:{
+          array = this.freeData.mondayHours;
+          break;
+        }
+        case 2:{
+          array = this.freeData.tuesdayHours;
+          break;
+        }
+        case 3:{
+          array = this.freeData.wednesdayHours;
+          break;
+        }
+        case 4:{
+          array = this.freeData.thursdayHours;
+          break;
+        }
+        case 5:{
+          array = this.freeData.fridayHours;
+          break;
+        }
+        case 6:{
+          array = this.freeData.saturdayHours;
+          break;
+        }
+        case 7:{
+          array = this.freeData.sundayHours;
+          break;
+        }
+      }
+
+      let index = 9;
+      for(let hour of array){
+        index ++;
+        if(hour){
+          this.hoursTable.push(index);
+        }
+      }
+    }
+
   book(){
-    // this.reservationService.addReservation(this.customer.userName).subscribe((res: ICustomer) => {
-      //TODO
-      //add to array  - update customer collection
+    this.newReservation.firstName = this.addFirstName;
+    this.newReservation.lastName = this.addLastName;
+    this.newReservation.telephone = this.addTelephone;
+
+    this.newReservation.date = this.createString(this.selectedWeek, +Days[this.selectedDay], 
+                                                this.selectedHour, this.selectedMonth);
+
       //add new reservation to collection reservations 
+     this.reservationService.addReservation(this.newReservation).subscribe((response: IReservation) => {
+
+      //add to array  - update customer collection
+     this.customer.reservations.push(response.number);
+     this.customerService.updateCustomer(this.customer.userName, this.customer) .subscribe((response: ICustomer) => {
+     });
+
       //update free Dates
-    // });
+      this.freeFromFreeData(this.newReservation.date, false);
+
+      //refresh website
+      this.showButton = !this.showButton;
+      this.show();
+      this.toastrService.success('Dodano rezerwacje', 'Sukces');
+     });
+  }
+
+  freeFromFreeData(s : String, status : boolean){
+  
+    let splitted = s.split(" ", 4);
+    this.weekNumber = +splitted[0];
+    let hour =  +splitted[2] - 10;  //visible is 10 but in array it's 0
+      console.log(hour);
+    switch(+splitted[1]){
+      case 1:{
+        this.freeData.mondayHours[hour] = status;
+        this.dayOfWeek = "monday";
+        break;
+      }
+      case 2:{
+        this.freeData.tuesdayHours[hour] = status;
+        this.dayOfWeek = "tuesday";
+        break;
+      }
+      case 3:{
+        this.freeData.wednesdayHours[hour] = status;
+        this.dayOfWeek = "wednesday";
+        break;
+      }
+      case 4:{
+        this.freeData.thursdayHours[hour] = status;
+        this.dayOfWeek = "thursday";
+        break;
+      }
+      case 5:{
+        this.freeData.fridayHours[hour] = status;
+        this.dayOfWeek = "friday";
+        break;
+      }
+      case 6:{
+        this.freeData.saturdayHours[hour] = status;
+        this.dayOfWeek = "saturday";
+        break;
+      }
+      case 7:{
+        this.freeData.sundayHours[hour] = status;
+        this.dayOfWeek = "sunday";
+        break;
+      }
+    }
+    
+    this.freeDateService.updateFreeDate(this.weekNumber, this.dayOfWeek, this.freeData).subscribe((responce: IFreeDate) => {
+      this.freeData = responce
+    });
+
+  }
+
+  createString(week : number, day : number, hour : number, month : String) : String{
+    let s = "";
+     s += week;
+     s += " ";
+     s += day;
+     s += " ";
+     s += hour;
+     s += " ";
+     s += month;
+    return s;
   }
 
   isEqual() : boolean{
@@ -60,11 +234,8 @@ export class CustomerComponent implements OnInit {
       return false;
   }
 
-
   delete(){
     if(this.reservationToDelete != null && this.isEqual()){
-
-      //string for next method
 
       //delete from reservations collection  
       this.reservationService.deleteReservation(this.reservationToDelete).subscribe((response: IReservation) => {
@@ -102,72 +273,20 @@ export class CustomerComponent implements OnInit {
       
     }
 
-    createString(week : String, day : String, hour : String) : String{
-      let s = "";
-       s += week;
-       s += " ";
-       s += day;
-       s += " ";
-       s += hour;
-      return s;
-    }
-
-    freeFromFreeData(s : String, status : boolean){
-  
-      let splitted = s.split(" ", 3);
-      this.weekNumber = +splitted[0];
-      let hour =  +splitted[2] - 10;  //visible is 10 but in array it's 0
-     
-      switch(splitted[1]){
-        case "monday":{
-          this.freeData.mondayHours[hour] = true;
-          this.dayOfWeek = "monday";
-          break;
-        }
-        case "tuesday":{
-          this.freeData.tuesdayHours[hour] = true;
-          this.dayOfWeek = "tuesday";
-          break;
-        }
-        case "wednesday":{
-          this.freeData.wednesdayHours[hour] = true;
-          this.dayOfWeek = "wednesday";
-          break;
-        }
-        case "thursday":{
-          this.freeData.thursdayHours[hour] = true;
-          this.dayOfWeek = "thursday";
-          break;
-        }
-        case "friday":{
-          this.freeData.fridayHours[hour] = true;
-          this.dayOfWeek = "friday";
-          break;
-        }
-        case "saturday":{
-          this.freeData.saturdayHours[hour] = true;
-          this.dayOfWeek = "saturday";
-          break;
-        }
-        case "sunday":{
-          this.freeData.sundayHours[hour] = true;
-          this.dayOfWeek = "sunday";
-          break;
-        }
-      }
-      
-      this.freeDateService.updateFreeDate(this.weekNumber, this.dayOfWeek, this.freeData).subscribe((responce: IFreeDate) => {
-        this.freeData = responce
-      });
-
-    }
-
   ngOnInit() {
     this.customerService.currentMessage.subscribe(message => this.customer = message);
     this.reservationToshow =  new Array(0);
+    this.weekTable = new Array(0);
     this.showButton = true;
+    this.showAdd = true;
     this.weekNumber = 1;
-    
+    this.newReservation = {
+      firstName : "test",
+      lastName : "test",
+      number : 1,
+      date : "",
+      telephone : 444333222
+    }
     
     //only for development time
     //testing only
