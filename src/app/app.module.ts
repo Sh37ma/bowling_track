@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MainNavBarComponent } from './main-navbar/main-navbar.component';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
@@ -24,6 +24,7 @@ import { CustomerComponent } from './customer/customer.component';
 import { CustomerService } from './customer/customer.service';
 import { ReservationService } from './reservation/reservation.service';
 import { FreeDateService } from './freeDate/free-date.service';
+import { AuthInterceptor } from './auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,12 @@ import { FreeDateService } from './freeDate/free-date.service';
   providers: [
     CustomerService,
     ReservationService,
-    FreeDateService
+    FreeDateService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })
