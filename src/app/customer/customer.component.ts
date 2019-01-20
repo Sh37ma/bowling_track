@@ -27,6 +27,7 @@ export class CustomerComponent implements OnInit {
   selectedMonth : String;
   selectedDay : number;
   selectedHour : number;
+  selectedTrack : number;
   dataToShow : IFreeDate;
   weekTable : String[];
   hoursTable : number[];
@@ -34,6 +35,7 @@ export class CustomerComponent implements OnInit {
   addLastName : String;
   addTelephone : number;
   newReservation : IReservation;
+  selected : boolean;
   
 
   constructor( private customerService : CustomerService, private freeDateService : FreeDateService, private reservationService : ReservationService, private router: Router, private toastrService: ToastrService) {
@@ -60,16 +62,19 @@ export class CustomerComponent implements OnInit {
 
     makeReadable(data : String) : String{
       let ready = "";
-      let splitted = data.split(" ", 4);
+      let splitted = data.split(" ", 5);
 
+      ready += "Tor nr. ";
+      ready += splitted[4];
+      ready += " ";
       ready += splitted[3];
       ready += " ";
-      ready += "Nr. tygodnia: ";
+      ready += "Tydzień ";
       ready += splitted[0];
       ready += " ";
       ready += Days[splitted[1]];
       ready += " ";
-      ready += "Godzina: ";
+      ready += "godz. ";
       ready += splitted[2];
       return ready;
     }
@@ -141,17 +146,20 @@ export class CustomerComponent implements OnInit {
     this.newReservation.firstName = this.addFirstName;
     this.newReservation.lastName = this.addLastName;
     this.newReservation.telephone = this.addTelephone;
+    this.newReservation.trackNumber = this.selectedTrack;
+    
 
-    this.newReservation.date = this.createString(this.selectedWeek, +Days[this.selectedDay], 
-                                                this.selectedHour, this.selectedMonth);
+    if(this.addFirstName !='' && this.addLastName !='' && this.addTelephone >= 500000000 && this.selectedHour != null){
+      this.newReservation.date = this.createString(this.selectedWeek, +Days[this.selectedDay], 
+        this.selectedHour, this.selectedMonth, this.selectedTrack);
 
       //add new reservation to collection reservations 
-     this.reservationService.addReservation(this.newReservation).subscribe((response: IReservation) => {
+      this.reservationService.addReservation(this.newReservation).subscribe((response: IReservation) => {
 
       //add to array  - update customer collection
-     this.customer.reservations.push(response.number);
-     this.customerService.updateCustomer(this.customer.userName, this.customer) .subscribe((response: ICustomer) => {
-     });
+      this.customer.reservations.push(response.number);
+      this.customerService.updateCustomer(this.customer.userName, this.customer) .subscribe((response: ICustomer) => {
+      });
 
       //update free Dates
       this.freeFromFreeData(this.newReservation.date, false);
@@ -160,7 +168,11 @@ export class CustomerComponent implements OnInit {
       this.showButton = !this.showButton;
       this.show();
       this.toastrService.success('Dodano rezerwacje', 'Sukces');
-     });
+      });
+    }
+    else{
+      this.toastrService.error('Sprawdź czy podałeś poprawne dane oraz wybierz termin', ' Nie poprawne dane');
+    }
   }
 
   freeFromFreeData(s : String, status : boolean){
@@ -213,7 +225,7 @@ export class CustomerComponent implements OnInit {
 
   }
 
-  createString(week : number, day : number, hour : number, month : String) : String{
+  createString(week : number, day : number, hour : number, month : String, track : number) : String{
     let s = "";
      s += week;
      s += " ";
@@ -222,6 +234,8 @@ export class CustomerComponent implements OnInit {
      s += hour;
      s += " ";
      s += month;
+     s += " ";
+     s += track;
     return s;
   }
 
@@ -258,19 +272,15 @@ export class CustomerComponent implements OnInit {
       this.toastrService.success('Udało się', 'Usunięto poprawnie');
       }
       else{
-        this.toastrService.error('Podaj numer rezerwacji do usunięcia', 'Błąd w usuwaniu');
+        this.toastrService.error('Podaj poprawny numer rezerwacji do usunięcia', 'Błąd w usuwaniu');
       }
     }
 
     logOut(){
-          //TODO
-          //upadte new date in customer, reservations and freeDate
-
           //delete customer from message to unable hacking
           this.router.navigate(['home'])
           this.toastrService.info('Poprawnie', 'Wylogowano');
-          this.customerService.changeMessage(null);
-      
+          this.customerService.changeMessage(null);      
     }
 
   ngOnInit() {
@@ -285,16 +295,17 @@ export class CustomerComponent implements OnInit {
       lastName : "test",
       number : 1,
       date : "",
-      telephone : 444333222
+      telephone : 444333222,
+      trackNumber : 1
     }
     
     //only for development time
     //testing only
-    // this.customer = {
-    //   userName: "test",
-    //   password: "test",
-    //   reservations: [3]
-    // }
+    this.customer = {
+      userName: "test",
+      password: "test",
+      reservations: [4, 5]
+    }
   
   }
 } 

@@ -25,6 +25,7 @@ import { CustomerService } from './customer/customer.service';
 import { ReservationService } from './reservation/reservation.service';
 import { FreeDateService } from './freeDate/free-date.service';
 import { AuthInterceptor } from './auth.interceptor';
+import { RecaptchaModule} from 'ng-recaptcha';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { AuthInterceptor } from './auth.interceptor';
     ScrollToModule.forRoot(),
     BrowserAnimationsModule, // required animations module
     ToastrModule.forRoot(), // ToastrModule added
-    AngularFontAwesomeModule
+    AngularFontAwesomeModule,
+    RecaptchaModule
   ],
   providers: [
     CustomerService,
@@ -81,7 +83,8 @@ import { AuthInterceptor } from './auth.interceptor';
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
+   
   ],
   bootstrap: [AppComponent]
 })

@@ -7,10 +7,10 @@
     
     <p>
     Nazwa użytkownika: <input type="text" placeholder="Nazwa" [(ngModel)]="userNameLogin">
-    Hasło: <input type="text" placeholder="Hasło" [(ngModel)]="passwordLogin">
+    Hasło: <input type="password" placeholder="Hasło" [(ngModel)]="passwordLogin">
     </p>
     <!-- <i class="fas fa-sign-in-alt" style="font-size: 30px"></i> -->
-    <button type="button" class="btn btn-primary" (click)="login()">Sign In</button>
+    <button type="button" class="btn btn-primary" (click)="login()">Zaloguj</button>
     <br><br>
     
     <br><br>
@@ -21,12 +21,17 @@
         Nazwa użytkownika: <input type="text" placeholder="Nazwa" [(ngModel)]="userNameRegister">
     </p>
     <p>
-        Hasło: <input type="text" placeholder="Hasło" [(ngModel)]="passwordRegister">
+        Hasło: <input type="password" placeholder="Hasło" [(ngModel)]="passwordRegister">
     </p>
     <p>
-        Powtórz hasło: <input type="text" placeholder="Powtórz hasło" [(ngModel)]="passwordRegister2">
+        Powtórz hasło: <input type="password" placeholder="Powtórz hasło" [(ngModel)]="passwordRegister2">
     </p>
-    <button type="button" class="btn btn-success" (click)="register()">Register</button>
+    
+    <div id="recaptcha">
+        <re-captcha (resolved)="resolved($event)" siteKey="6LcCTosUAAAAADFTNUlwd98YAcgsOikGMLo4gEbY" ></re-captcha>
+        <br>
+        <button type="button" class="btn btn-success" (click)="register()" [disabled]="disableButton">Rejestruj</button>
+    </div>    
     
     <br><br>
     

@@ -4,5 +4,6 @@ export interface IReservation {
     lastName : String;
 	date : String;
 	telephone : number;
+	trackNumber: number;
 }
 

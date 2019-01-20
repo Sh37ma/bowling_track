@@ -57,3 +57,8 @@ h2 {
     padding: 20px;
     text-align: center;
   }
+
+  #recaptcha {
+    width: 304px;
+    margin: 0 auto;
+  }

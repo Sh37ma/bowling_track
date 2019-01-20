@@ -9,8 +9,8 @@
           <p>Twoja liczba rezerwacji: {{customer.reservations.length}}</p>
 
           <button type="button" class="btn btn-warning" (click)="show()" *ngIf="showButton">Wyswietl wszystkie rezerwacje</button>
-          <ng-container *ngIf="!showButton">
-              <table>
+           <ng-container *ngIf="!showButton"> 
+               <table>
                   <tr>
                     <th>Numer</th>
                     <th>Imie</th>
@@ -18,14 +18,14 @@
                     <th>Data</th>
                     <th>Telefon</th>
                   </tr>
-                  <tr *ngFor = "let r of reservationToshow">
-                    <td>{{r.number}}</td>
-                    <td>{{r.firstName}}</td>
-                    <td>{{r.lastName}}</td> 
-                    <td>{{r.date}}</td>
-                    <td>{{r.telephone}}</td>
+                  <tr [ngClass]="{'_selected' : selected === index}" *ngFor = "let row of reservationToshow; let i = index">
+                    <td>{{row.number}}</td>
+                    <td>{{row.firstName}}</td>
+                    <td>{{row.lastName}}</td>   
+                    <td>{{row.date}}</td>
+                    <td>{{row.telephone}}</td>
                   </tr>
-                </table>
+                </table> 
                 <br>
             <button type="button" class="btn btn-warning" (click)="show()">Schowaj rezerwacje</button>
           </ng-container>  
@@ -33,17 +33,33 @@
           <br><br>
 
           <button type="button" class="btn btn-success" (click)="changeButtonAdd()" *ngIf="showAdd">Dodaj rezerwacje</button>
+          
+          <!-- 
+          @
+        @
+      @
+     -->
           <ng-container *ngIf="!showAdd">
 
             <h3>Wolne terminy</h3>
+            <h6>(Jeśli nie wyświetlają się dostępne godziny po wybraniu konkretnego dnia, oznacza to, 
+              że w danym dniu wszystkie reminy są zajęte)</h6>
+            <div>
+              <h5>Wybierz Tor:</h5>
+              <select [(ngModel)]="selectedTrack">
+                  <option value="1">Tor nr. 1</option>
+                  <option value="2">Tor nr. 2</option>
+                  <option value="3">Tor nr. 3</option>
+              </select>
+            </div>
             <h5 style = "display: inline-block">Wybierz miesiąc:</h5>
-            <select [(ngModel)]="selectedMonth">
+            <select [(ngModel)]="selectedMonth"  *ngIf = "selectedTrack">
                 <option value="Styczeń">Styczeń</option>
                 <option value="Luty">Luty</option>
             </select>
             &nbsp;
             <h5 style = "display: inline-block">Wybierz tydzień:</h5>
-            <select [(ngModel)]="selectedWeek" (click)="showTermin()">
+            <select [(ngModel)]="selectedWeek" *ngIf = "selectedMonth" (click)="showTermin()">
                 <option value="1">Pierwszy tydzień</option>
                 <option value="2">Drugi tydzień</option>
                 <option value="3">Trzeci tydzień</option>
@@ -51,12 +67,12 @@
             </select>
             &nbsp;
             <h5 style = "display: inline-block">Wybierz Dzień:</h5>
-            <select [(ngModel)]="selectedDay" (click)="showHours()">
+            <select [(ngModel)]="selectedDay" *ngIf = "selectedWeek && weekTable.length>0" (click)="showHours()">
                 <option value={{x}} *ngFor = "let x of weekTable">{{x}}</option>
             </select>
             &nbsp;
             <h5 style = "display: inline-block">Wybierz Godzine:</h5>
-            <select [(ngModel)]="selectedHour" *ngIf = "selectedDay">
+            <select [(ngModel)]="selectedHour" *ngIf = "selectedDay && hoursTable.length>0">
                 <option value={{y}} *ngFor = "let y of hoursTable">{{y}}</option>
             </select>
 
@@ -91,8 +107,61 @@
         <ng-template #other_content>
             <p>Niestety nie posiadasz aktualnie żadnej rezerwacji</p>
             <p>Zachęcamy Cię do złożenia nowej</p>
-            <button type="button" class="btn btn-light" (click)="book()">Dodaj rezerwacje</button>
+            <button type="button" class="btn btn-light" (click)="changeButtonAdd()" *ngIf="showAdd">Dodaj rezerwacje</button>
       
+          <!-- 
+            @
+          @
+        @
+      -->
+            <ng-container *ngIf="!showAdd">
+
+              <h3>Wolne terminy</h3>
+              <h5 style = "display: inline-block">Wybierz miesiąc:</h5>
+              <select [(ngModel)]="selectedMonth">
+                  <option value="Styczeń">Styczeń</option>
+                  <option value="Luty">Luty</option>
+              </select>
+              &nbsp;
+              <h5 style = "display: inline-block">Wybierz tydzień:</h5>
+              <select [(ngModel)]="selectedWeek" (click)="showTermin()">
+                  <option value="1">Pierwszy tydzień</option>
+                  <option value="2">Drugi tydzień</option>
+                  <option value="3">Trzeci tydzień</option>
+                  <option value="4">Czwarty tydzień</option>
+              </select>
+              &nbsp;
+              <h5 style = "display: inline-block">Wybierz Dzień:</h5>
+              <select [(ngModel)]="selectedDay" (click)="showHours()">
+                  <option value={{x}} *ngFor = "let x of weekTable">{{x}}</option>
+              </select>
+              &nbsp;
+              <h5 style = "display: inline-block">Wybierz Godzine:</h5>
+              <select [(ngModel)]="selectedHour" *ngIf = "selectedDay">
+                  <option value={{y}} *ngFor = "let y of hoursTable">{{y}}</option>
+              </select>
+  
+              <br><br>
+              <input type="text" placeholder="Imię" [(ngModel)]="addFirstName" style = "width: 100px;"> 
+              &nbsp;
+              <input type="text" placeholder="Nazwisko" [(ngModel)]="addLastName" style = "width: 100px;"> 
+              &nbsp;
+              <input type="text" placeholder="Telefon" [(ngModel)]="addTelephone" style = "width: 100px;"> 
+              <br><br>
+  
+              <button type="button" class="btn btn-success" (click)="book()">Dodaj</button>
+              <br><br>
+  
+            <button type="button" class="btn btn-warning" (click)="changeButtonAdd()">Anuluj Dodawanie</button>
+            </ng-container>  
+            <br><br>
+
+
+
+
+
+
+
         <br><br><br><br>
       
         <button type="button" class="btn btn-dark" (click)="logOut()">Wyloguj</button>

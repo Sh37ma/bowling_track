@@ -29,11 +29,15 @@ h2 {
     font: bold 16px Georgia;
   } 
 
+  h6{
+    font: italic 12px Georgia;
+  } 
+
   table, th, td{
     font: bold 16px Georgia;
     text-align: center; 
-    margin-left: 360px;
-    border: 1px solid black;
+    margin-left: 160px;
+    border: 12 solid black;
     border-collapse: collapse; 
     padding: 15px;
     background-color: #346de9;
@@ -77,3 +81,7 @@ h2 {
     padding: 20px;
     text-align: center;
   }
+  .selected {
+    background-color: yellow;
+ }
+ 
