@@ -36,14 +36,24 @@ h2 {
   table, th, td{
     font: bold 16px Georgia;
     text-align: center; 
-    margin-left: 160px;
-    border: 12 solid black;
-    border-collapse: collapse; 
+    margin-left: 400px;
     padding: 15px;
     background-color: #346de9;
+    border: 4px solid black;
+    border-collapse: collapse; 
   }
+
+  table{
+    border-style: hidden;
+  }
+
   th{
     background-color: #000000;
+    border-style: hidden;
+  }
+
+  td{
+    cursor: -webkit-grab; cursor: grab;
   }
 
   .bg-image{
@@ -82,6 +92,6 @@ h2 {
     text-align: center;
   }
   .selected {
-    background-color: yellow;
+    color: yellow !important;
  }
  

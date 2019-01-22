@@ -46,7 +46,6 @@ import { RecaptchaModule} from 'ng-recaptcha';
     BrowserModule,
     HttpClientModule,
     SlideshowModule,
-    FormsModule,
     RouterModule.forRoot([
       {
         path: 'home',
@@ -73,7 +72,8 @@ import { RecaptchaModule} from 'ng-recaptcha';
     BrowserAnimationsModule, // required animations module
     ToastrModule.forRoot(), // ToastrModule added
     AngularFontAwesomeModule,
-    RecaptchaModule
+    RecaptchaModule,
+    FormsModule
   ],
   providers: [
     CustomerService,

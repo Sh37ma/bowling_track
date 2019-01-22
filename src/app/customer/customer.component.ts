@@ -35,7 +35,7 @@ export class CustomerComponent implements OnInit {
   addLastName : String;
   addTelephone : number;
   newReservation : IReservation;
-  selected : boolean;
+  select : number;
   
 
   constructor( private customerService : CustomerService, private freeDateService : FreeDateService, private reservationService : ReservationService, private router: Router, private toastrService: ToastrService) {
@@ -45,13 +45,18 @@ export class CustomerComponent implements OnInit {
     });
   }
 
+  onClick(index: number){
+    this.select = index;
+    console.log(index);
+    this.reservationToDelete = this.reservationToshow[index].number;
+    this.toastrService.warning((this.reservationToshow[index].date).toString(), 'Wybrano rezerwacje do usuniecia');
+  }
+
   show(){
     this.reservationToshow =  new Array(0);
       for(let reservationNumber of this.customer.reservations){
         this.reservationService.getReservation(reservationNumber).subscribe((response: IReservation) => {
 
-//TODO
-          //create readable date = Month week day
           response.date = this.makeReadable(response.date);
           this.reservationToshow.push(response);
 
@@ -147,7 +152,6 @@ export class CustomerComponent implements OnInit {
     this.newReservation.lastName = this.addLastName;
     this.newReservation.telephone = this.addTelephone;
     this.newReservation.trackNumber = this.selectedTrack;
-    
 
     if(this.addFirstName !='' && this.addLastName !='' && this.addTelephone >= 500000000 && this.selectedHour != null){
       this.newReservation.date = this.createString(this.selectedWeek, +Days[this.selectedDay], 
